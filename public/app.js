@@ -1,7 +1,7 @@
 import {$,esc,money,safeURL,field,toast} from './common.js';
 let products=[],category='Tout',demo=false,config,settings={delivery_fee:0,accepting_orders:true},cart=[],favorites=[],attempt=null;
 try{cart=JSON.parse(localStorage.getItem('sh-cart')||'[]');favorites=JSON.parse(localStorage.getItem('sh-favorites')||'[]');if(!Array.isArray(cart))cart=[];if(!Array.isArray(favorites))favorites=[];}catch{cart=[];favorites=[];}
-const modal=$('#modal'),cats=['Tout','Sneakers','Streetwear','Bijoux','Parfums','Électronique','Autres'];
+const modal=$('#modal'),cats=['Tout','Sneakers','Streetwear','Bijoux','Parfums','Électronique','Armes blanches','Autres'];
 function save(){localStorage.setItem('sh-cart',JSON.stringify(cart));$('#count').textContent=cart.reduce((n,x)=>n+x.quantity,0);}
 function open(html){$('#modal-content').innerHTML=html;if(!modal.open)modal.showModal();modal.scrollTop=0;}
 $('.close').onclick=()=>modal.close();modal.onclick=e=>{if(e.target===modal){const r=modal.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)modal.close();}};
