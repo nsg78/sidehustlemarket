@@ -24,12 +24,12 @@
   open.style.cssText = 'color:#ff865e;font-size:12px;font-weight:bold;text-decoration:none;';
   head.append(title, open);
   var iframe = document.createElement('iframe');
-  iframe.src = origin + '/';
+  iframe.src = origin + '/forum.html';
   iframe.title = 'STASH Pawnshop — Boutique interactive';
   iframe.loading = 'lazy';
   iframe.referrerPolicy = 'strict-origin-when-cross-origin';
   iframe.setAttribute('allow', 'clipboard-write');
-  iframe.style.cssText = 'display:block;border:0;width:100%;height:1050px;background:#f3f3ed;';
+  iframe.style.cssText = 'display:block;border:0;width:100%;height:960px;background:#f3f3ed;';
   var foot = document.createElement('div');
   foot.style.cssText = 'padding:10px 18px;background:#20211f;color:#eee;font-size:12px;';
   foot.textContent = 'Stock, réservations et demandes gérés directement par la boutique STASH.';
