@@ -40,6 +40,24 @@ dialog#modal{max-height:calc(100dvh - 24px);max-width:calc(100% - 20px);overflow
  .service-band{grid-template-columns:1fr}
  .service-band>div+div{border-left:0;border-top:1px solid #474a41}
 }
+
+/* V3: make dialogs usable inside an embedded storefront */
+#bag.bag-drawer{position:fixed;inset:12px 12px 12px auto;width:min(440px,calc(100% - 24px));height:calc(100dvh - 24px);max-height:calc(100dvh - 24px);border-radius:16px;padding:0}
+#bag-content{height:100%;max-height:100%;padding:52px 18px 12px;display:flex;flex-direction:column;overflow-y:auto;overscroll-behavior:contain}
+#bag-content .bag-items{flex:0 1 auto;overflow-y:auto;min-height:0;max-height:calc(100dvh - 360px)}
+#bag-content .bag-heading{flex-shrink:0;margin-bottom:10px}
+#bag-content .bag-bottom{position:sticky;bottom:-12px;margin-top:auto;padding:12px 0 14px;flex-shrink:0;z-index:2}
+#bag-content .bag-bottom .button{min-height:42px;padding:10px 15px;margin-top:8px}
+#bag-content .bag-item{padding:12px 0}
+#bag-content .bag-item img{max-height:84px;object-fit:contain}
+#bag-content .bag-total-line{margin-bottom:5px}
+#bag-content .mini-trust{padding-bottom:6px}
+#modal{max-height:calc(100dvh - 24px);overflow-y:auto}
+@media(max-width:620px){
+#bag.bag-drawer{inset:6px;width:calc(100% - 12px);height:calc(100dvh - 12px);max-height:calc(100dvh - 12px)}
+#bag-content{padding:50px 12px 12px}
+#bag-content .bag-items{max-height:calc(100dvh - 315px)}
+}
 </style></head><body>
 <div class="utility"><span>LOS SANTOS / INDEPENDENT GOODS EXCHANGE</span><span>PRIX FIXES. PAIEMENT À LA REMISE.</span></div>
 <header class="store-header"><a class="brand" href="/"><span class="brand-name">STASH</span><span class="brand-subtitle">PAWNSHOP</span></a><nav><a href="#catalogue">LE SHOP</a><button data-service="sell">VENDRE</button><button data-service="source">RECHERCHE SUR MESURE</button></nav><div class="header-actions"><a href="/track.html" class="tracking-link">Suivre mes commandes ↗</a><button id="cart-button" class="cart-button">Panier <span id="count">0</span></button></div></header>
@@ -50,4 +68,30 @@ dialog#modal{max-height:calc(100dvh - 24px);max-width:calc(100% - 20px);overflow
 <section id="recent-section" class="recent-section" hidden><div class="section-heading"><div><span class="eyebrow">TOUJOURS EN TÊTE ?</span><h2>Vos dernières vues.</h2></div></div><div id="recent-products" class="recent-products"></div></section><section class="service-band"><div><span class="eyebrow">NOT ON THE SHELF?</span><h2>On sait où chercher.</h2><p>Une référence précise, une taille, un budget.<br>Confiez-nous la recherche, suivez-la avec votre téléphone.</p><button class="button light" data-service="source">Lancer une recherche ↗</button></div><div><span class="eyebrow">MAKE ROOM FOR SOMETHING ELSE</span><h2>Faites tourner les pièces.</h2><p>Votre objet mérite mieux qu’un tiroir.<br>Présentez-le au comptoir : rachat, dépôt-vente ou échange.</p><button class="button outline-light" data-service="sell">Proposer un objet ↗</button></div></section>
 <section class="how-it-works"><span class="eyebrow">COMMENT ÇA SE PASSE</span><div><article><b>01 / CHOISISSEZ</b><h3>La pièce est à vous.</h3><p>Validez le sac avec votre nom et votre numéro. Le stock est réservé immédiatement.</p></article><article><b>02 / ON VOUS CONTACTE</b><h3>On cale la remise.</h3><p>Retrait ou livraison : nous vous contactons sur votre téléphone pour confirmer le rendez-vous.</p></article><article><b>03 / RÉCEPTIONNEZ</b><h3>Inspectez. Réglez. Profitez.</h3><p>Le règlement se fait à la remise. Retrouvez chaque étape dans votre suivi.</p></article></div></section>
 </main><footer><div class="footer-wordmark"><span class="brand-name">STASH</span><span class="brand-subtitle">PAWNSHOP</span></div><div class="footer-bottom"><span>GOOD FINDS. SECOND STORIES.</span><a href="/track.html">Suivi par téléphone</a><a href="/admin.html">Le comptoir / accès gérant</a><span id="contact-phone" hidden></span><span>LOS SANTOS, SA</span></div></footer>
-<dialog id="modal"><button class="close" aria-label="Fermer">×</button><div id="modal-content"></div></dialog><div id="toast" role="status"></div><dialog id="bag" class="bag-drawer" aria-label="Panier et commande"><button id="bag-close" class="drawer-close" aria-label="Fermer le panier">×</button><div id="bag-content"></div></dialog><button id="floating-cart" class="floating-cart" hidden><span class="floating-icon">＋</span><span>Mon panier <b id="floating-count">0</b></span><strong id="floating-total">$0</strong><span>↗</span></button><script type="module" src="/app.js?v=2.2.0"></script></body></html>
+<dialog id="modal"><button class="close" aria-label="Fermer">×</button><div id="modal-content"></div></dialog><div id="toast" role="status"></div><dialog id="bag" class="bag-drawer" aria-label="Panier et commande"><button id="bag-close" class="drawer-close" aria-label="Fermer le panier">×</button><div id="bag-content"></div></dialog><button id="floating-cart" class="floating-cart" hidden><span class="floating-icon">＋</span><span>Mon panier <b id="floating-count">0</b></span><strong id="floating-total">$0</strong><span>↗</span></button><script type="module" src="/app.js?v=2.2.0"></script><script>
+(function(){
+  var dialogIds=['bag','modal'];
+  var lastOpen=false,lastHeight=0;
+  function notify(){
+    var active=dialogIds.some(function(id){var d=document.getElementById(id);return d&&d.open;});
+    var height=active?880:Math.max(700,document.documentElement.scrollHeight,document.body.scrollHeight);
+    height=Math.min(height,12000);
+    if(active!==lastOpen||Math.abs(height-lastHeight)>6){
+      lastOpen=active;lastHeight=height;
+      if(window.parent!==window)window.parent.postMessage({type:'stash-forum-layout',height:height,overlay:active},'*');
+    }
+  }
+  var observer=new MutationObserver(notify);
+  window.addEventListener('load',notify);
+  window.addEventListener('resize',notify);
+  document.addEventListener('click',function(){setTimeout(notify,30)});
+  ['bag','modal','products','categories'].forEach(function(id){
+    var node=document.getElementById(id);
+    if(node)observer.observe(node,{attributes:true,childList:true,subtree:id==='products'});
+  });
+  if(window.ResizeObserver){
+    new ResizeObserver(notify).observe(document.body);
+  }
+  notify();
+})();
+</script></body></html>
