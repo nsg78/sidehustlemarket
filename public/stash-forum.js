@@ -35,4 +35,16 @@
   foot.textContent = 'Stock, réservations et demandes gérés directement par la boutique STASH.';
   embed.append(head, iframe, foot);
   root.replaceChildren(embed);
+  // Accept resize messages only from the trusted Stash storefront iframe.
+  window.addEventListener('message', function(event) {
+    if (event.origin !== origin || event.source !== iframe.contentWindow) return;
+    var data = event.data;
+    if (!data || data.type !== 'stash-forum-layout' || !Number.isFinite(data.height)) return;
+    var height = Math.max(700, Math.min(12000, Math.ceil(data.height)));
+    iframe.style.height = height + 'px';
+    if (data.overlay && iframe.getBoundingClientRect().top < -160) {
+      // Move the forum viewport to the active checkout without taking focus.
+      iframe.scrollIntoView({block:'start',behavior:'smooth'});
+    }
+  });
 })();
